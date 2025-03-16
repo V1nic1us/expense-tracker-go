@@ -11,6 +11,7 @@ import (
 var Description string
 var Amount float32
 const FileName = "Book1.xlsx"
+const SheetName = "Sheet1"
 
 var addCmd = &cobra.Command{
 	Use:   "add",
@@ -37,24 +38,24 @@ var addCmd = &cobra.Command{
 			}
 		}()
 
-		rows, err := f.GetRows("Sheet1")
+		rows, err := f.GetRows(SheetName)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		rowCount := len(rows)
 		if rowCount == 0 {
-			f.SetCellValue("Sheet1", "A1", "ID")
-			f.SetCellValue("Sheet1", "B1", "Date")
-			f.SetCellValue("Sheet1", "C1", "Description")
-			f.SetCellValue("Sheet1", "D1", "Amount")
+			f.SetCellValue(SheetName, "A1", "ID")
+			f.SetCellValue(SheetName, "B1", "Date")
+			f.SetCellValue(SheetName, "C1", "Description")
+			f.SetCellValue(SheetName, "D1", "Amount")
 			rowCount = 1
 		}
 
-		f.SetCellValue("Sheet1", fmt.Sprintf("A%d", rowCount+1), rowCount)
-		f.SetCellValue("Sheet1", fmt.Sprintf("B%d", rowCount+1), time.Now().Format("02-01-2006"))
-		f.SetCellValue("Sheet1", fmt.Sprintf("C%d", rowCount+1), Description)
-		f.SetCellValue("Sheet1", fmt.Sprintf("D%d", rowCount+1), Amount)
+		f.SetCellValue(SheetName, fmt.Sprintf("A%d", rowCount+1), rowCount)
+		f.SetCellValue(SheetName, fmt.Sprintf("B%d", rowCount+1), time.Now().Format("02-01-2006"))
+		f.SetCellValue(SheetName, fmt.Sprintf("C%d", rowCount+1), Description)
+		f.SetCellValue(SheetName, fmt.Sprintf("D%d", rowCount+1), Amount)
 
 		// Save spreadsheet by the given path.
 		if err := f.SaveAs(FileName); err != nil {
