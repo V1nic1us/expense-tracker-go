@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 	"github.com/spf13/cobra"
 	"github.com/xuri/excelize/v2"
@@ -10,6 +11,7 @@ import (
 
 var Description string
 var Amount float32
+
 const FileName = "Book1.xlsx"
 const SheetName = "Sheet1"
 
@@ -52,7 +54,21 @@ var addCmd = &cobra.Command{
 			rowCount = 1
 		}
 
-		f.SetCellValue(SheetName, fmt.Sprintf("A%d", rowCount+1), rowCount)
+		var maxId int64 = 0
+		for i, row := range rows {
+			if i == 0 {
+				continue
+			}
+			if row[0] > string(maxId) {
+				number, err := strconv.ParseInt(row[0], 10, 64)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				maxId = number
+			}
+		}
+		f.SetCellValue(SheetName, fmt.Sprintf("A%d", rowCount+1), maxId+1)
 		f.SetCellValue(SheetName, fmt.Sprintf("B%d", rowCount+1), time.Now().Format("02-01-2006"))
 		f.SetCellValue(SheetName, fmt.Sprintf("C%d", rowCount+1), Description)
 		f.SetCellValue(SheetName, fmt.Sprintf("D%d", rowCount+1), Amount)
